@@ -14,7 +14,7 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
     // Navigate to HomePage after 3 seconds
-    Timer(const Duration(seconds: 5), () {
+    Timer(const Duration(seconds: 2), () {
       Navigator.of(
         context,
       ).pushReplacement(MaterialPageRoute(builder: (context) => WelcomePage()));

@@ -1,3 +1,5 @@
+import 'package:dd_grab/view/bottom_nav_bar.dart';
+import 'package:dd_grab/view/main_navigation_page.dart';
 import 'package:flutter/material.dart';
 
 class LoginPage extends StatelessWidget {
@@ -22,7 +24,6 @@ class LoginPage extends StatelessWidget {
           children: [
             const SizedBox(height: 70),
 
-            // Logo
             Image.asset(
               'assets/images/ddgrab_icon.png', // Replace with your logo
               height: 60,
@@ -91,7 +92,12 @@ class LoginPage extends StatelessWidget {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () {
-                  // Handle login logic
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => MainNavigationPage(),
+                    ),
+                  );
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.yellow[600],
