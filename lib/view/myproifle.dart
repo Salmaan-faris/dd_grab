@@ -1,3 +1,4 @@
+import 'package:dd_grab/view/reusable_appbar.dart';
 import 'package:flutter/material.dart';
 
 class MyproiflePage extends StatelessWidget {
@@ -5,6 +6,6 @@ class MyproiflePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold();
+    return Scaffold(body: Column(children: [CustomHomeAppBar()]));
   }
 }

@@ -1,3 +1,4 @@
+import 'package:dd_grab/view/reusable_appbar.dart';
 import 'package:flutter/material.dart';
 
 class WishlistPage extends StatelessWidget {
@@ -5,6 +6,6 @@ class WishlistPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold();
+    return Scaffold(body: Column(children: [CustomHomeAppBar()]));
   }
 }
