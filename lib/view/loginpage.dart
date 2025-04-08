@@ -1,13 +1,17 @@
-import 'package:dd_grab/view/main_navigation_page.dart';
+// login_page.dart (MVVM with Riverpod)
+import 'package:dd_grab/viewmodels/login_vm.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends ConsumerWidget {
   const LoginPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final viewModel = ref.watch(loginViewModelProvider);
+
     return Scaffold(
-      backgroundColor: const Color(0xFF121212), // dark background
+      backgroundColor: const Color(0xFF121212),
       appBar: AppBar(
         backgroundColor: const Color(0xFF121212),
         elevation: 0,
@@ -18,113 +22,104 @@ class LoginPage extends StatelessWidget {
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            const SizedBox(height: 70),
-
-            Image.asset(
-              'assets/images/ddgrab_icon.png', // Replace with your logo
-              height: 60,
-            ),
-            const SizedBox(height: 24),
-
-            const Text(
-              'Log in to Dgrab',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const SizedBox(height: 70),
+              Image.asset('assets/images/ddgrab_icon.png', height: 60),
+              const SizedBox(height: 24),
+              const Text(
+                'Log in to Dgrab',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-            ),
-            const SizedBox(height: 8),
-            const Text(
-              'Welcome back! Sign in using your\nemail to continue us',
-              textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.white70, fontSize: 14),
-            ),
-            const SizedBox(height: 32),
-
-            // Email TextField
-            TextField(
-              style: const TextStyle(color: Colors.white),
-              decoration: InputDecoration(
-                hintText: 'Your email',
-                hintStyle: const TextStyle(color: Colors.white70),
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.yellow[600]!),
-                  borderRadius: BorderRadius.circular(6),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.yellow[700]!),
-                  borderRadius: BorderRadius.circular(6),
-                ),
-                filled: true,
-                fillColor: Colors.transparent,
+              const SizedBox(height: 8),
+              const Text(
+                'Welcome back! Sign in using your\nemail to continue us',
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.white70, fontSize: 14),
               ),
-            ),
-            const SizedBox(height: 16),
+              const SizedBox(height: 32),
 
-            // Password TextField
-            TextField(
-              obscureText: true,
-              style: const TextStyle(color: Colors.white),
-              decoration: InputDecoration(
-                hintText: 'Password',
-                hintStyle: const TextStyle(color: Colors.white70),
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.yellow[600]!),
-                  borderRadius: BorderRadius.circular(6),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.yellow[700]!),
-                  borderRadius: BorderRadius.circular(6),
-                ),
-                filled: true,
-                fillColor: Colors.transparent,
-              ),
-            ),
-            const SizedBox(height: 24),
-
-            // Log in button
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => MainNavigationPage(),
-                    ),
-                  );
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.yellow[600],
-                  foregroundColor: Colors.black,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
+              TextField(
+                controller: viewModel.emailController,
+                style: const TextStyle(color: Colors.white),
+                decoration: InputDecoration(
+                  hintText: 'Your email',
+                  hintStyle: const TextStyle(color: Colors.white70),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.yellow[600]!),
                     borderRadius: BorderRadius.circular(6),
                   ),
-                ),
-                child: const Text(
-                  'Log in',
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.yellow[700]!),
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  filled: true,
+                  fillColor: Colors.transparent,
                 ),
               ),
-            ),
-            const SizedBox(height: 16),
+              const SizedBox(height: 16),
 
-            // Forgot Password
-            TextButton(
-              onPressed: () {
-                // Handle forgot password
-              },
-              child: const Text(
-                'Forgot password?',
-                style: TextStyle(color: Colors.white70),
+              TextField(
+                controller: viewModel.passwordController,
+                obscureText: true,
+                style: const TextStyle(color: Colors.white),
+                decoration: InputDecoration(
+                  hintText: 'Password',
+                  hintStyle: const TextStyle(color: Colors.white70),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.yellow[600]!),
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.yellow[700]!),
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  filled: true,
+                  fillColor: Colors.transparent,
+                ),
               ),
-            ),
-          ],
+              const SizedBox(height: 24),
+
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed:
+                      viewModel.isLoading
+                          ? null
+                          : () => viewModel.login(context),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.yellow[600],
+                    foregroundColor: Colors.black,
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                  ),
+                  child:
+                      viewModel.isLoading
+                          ? const CircularProgressIndicator(color: Colors.black)
+                          : const Text(
+                            'Log in',
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              TextButton(
+                onPressed: () {},
+                child: const Text(
+                  'Forgot password?',
+                  style: TextStyle(color: Colors.white70),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
