@@ -4,7 +4,7 @@ import 'package:dd_grab/view/home_page.dart';
 import 'package:dd_grab/view/myproifle.dart';
 import 'package:dd_grab/view/savings.dart';
 import 'package:dd_grab/view/wishlist.dart';
-import 'package:dd_grab/view_model/bottom_nav_bar_vm.dart';
+import 'package:dd_grab/viewmodels/bottom_nav_bar_vm.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -20,7 +20,7 @@ class MainNavigationPage extends ConsumerWidget {
       CategoryPage(),
       WishlistPage(),
       SavingsPage(),
-      MyproiflePage(),
+      ProfilePage(),
     ];
 
     return Scaffold(

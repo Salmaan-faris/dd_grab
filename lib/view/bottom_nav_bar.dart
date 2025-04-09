@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:dd_grab/view_model/bottom_nav_bar_vm.dart';
+import 'package:dd_grab/viewmodels/bottom_nav_bar_vm.dart';
 
 class BottomNavBarWidget extends ConsumerWidget {
   const BottomNavBarWidget({super.key});

@@ -1,3 +1,4 @@
+import 'package:dd_grab/view/carousel.dart';
 import 'package:dd_grab/view/reusable_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -21,76 +22,34 @@ class HomePage extends StatelessWidget {
                 scrollDirection: Axis.horizontal,
                 child: Row(
                   children: const [
-                    _CategoryItem(icon: Icons.tv, label: "Television"),
                     _CategoryItem(
-                      icon: Icons.checkroom_outlined,
-                      label: "Fashion",
+                      imagePath: 'assets/images/television.png',
+                      label: 'Television',
                     ),
-                    _CategoryItem(icon: Icons.phone_android, label: "Mobile"),
+
                     _CategoryItem(
-                      icon: Icons.chair_alt_outlined,
-                      label: "Furniture",
+                      imagePath: 'assets/images/jacket.png',
+                      label: 'Fashion',
                     ),
-                    _CategoryItem(icon: Icons.headphones, label: "Headphone"),
+                    _CategoryItem(
+                      imagePath: 'assets/images/phone.png',
+                      label: 'Mobile',
+                    ),
+                    _CategoryItem(
+                      imagePath: 'assets/images/sofa.png',
+                      label: 'Furniture',
+                    ),
+                    _CategoryItem(
+                      imagePath: 'assets/images/headphones.png',
+                      label: 'Headphone',
+                    ),
                   ],
                 ),
               ),
             ),
 
             // Promo Banner
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              child: Container(
-                height: 150,
-                decoration: BoxDecoration(
-                  color: Colors.pink.shade50,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Stack(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            'Up 50% off',
-                            style: GoogleFonts.poppins(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            'Iphone 16 + 128 GB',
-                            style: GoogleFonts.poppins(
-                              fontSize: 14,
-                              color: Colors.black87,
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                          ElevatedButton(
-                            onPressed: () {},
-                            child: const Text('Shop Now'),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Positioned(
-                      right: 16,
-                      top: 16,
-                      bottom: 16,
-                      child: Image.asset(
-                        'assets/images/iphone.png', // Replace with your banner image
-                        width: 100,
-                        fit: BoxFit.contain,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
+            BannerCarousel(),
 
             // Deals You Will Love
             Padding(
@@ -111,19 +70,19 @@ class HomePage extends StatelessWidget {
                 children: const [
                   _DealsCard(
                     title: "Today’s Deal",
-                    imageUrl: "assets/images/deal1.png",
+                    imageUrl: "assets/images/Rectangle 84.png",
                   ),
                   _DealsCard(
                     title: "Up to 50% off",
-                    imageUrl: "assets/images/deal2.png",
+                    imageUrl: "assets/images/image.png",
                   ),
                   _DealsCard(
                     title: "Under ₹799",
-                    imageUrl: "assets/images/deal3.png",
+                    imageUrl: "assets/images/Rectangle 84 (1).png",
                   ),
                   _DealsCard(
                     title: "From ₹399",
-                    imageUrl: "assets/images/deal4.png",
+                    imageUrl: "assets/images/Rectangle1.png",
                   ),
                 ],
               ),
@@ -152,7 +111,7 @@ class HomePage extends StatelessWidget {
                   ),
                   _DealsCard(
                     title: "iPhone 15 Plus",
-                    imageUrl: "assets/images/iphone15plus.png",
+                    imageUrl: "assets/images/phone2.png",
                   ),
                   _DealsCard(
                     title: "Air Purifier",
@@ -160,7 +119,7 @@ class HomePage extends StatelessWidget {
                   ),
                   _DealsCard(
                     title: "Dining Sets",
-                    imageUrl: "assets/images/diningset.png",
+                    imageUrl: "assets/images/table.png",
                   ),
                 ],
               ),
@@ -175,22 +134,27 @@ class HomePage extends StatelessWidget {
 
 // CATEGORY ITEM
 class _CategoryItem extends StatelessWidget {
-  final IconData icon;
+  final String imagePath;
   final String label;
 
-  const _CategoryItem({required this.icon, required this.label});
+  const _CategoryItem({required this.imagePath, required this.label});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 70,
+      width: 80,
       margin: const EdgeInsets.only(right: 12),
       child: Column(
         children: [
           CircleAvatar(
             radius: 26,
             backgroundColor: Colors.white,
-            child: Icon(icon, color: Colors.black87),
+            child: Image.asset(
+              imagePath,
+              width: 30,
+              height: 30,
+              fit: BoxFit.contain,
+            ),
           ),
           const SizedBox(height: 6),
           Text(
@@ -214,13 +178,13 @@ class _DealsCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 80,
+      width: 100,
       margin: const EdgeInsets.only(right: 12),
       child: Column(
         children: [
           Container(
-            height: 60,
-            width: 60,
+            height: 80,
+            width: 80,
             decoration: BoxDecoration(
               color: Colors.grey.shade100,
               borderRadius: BorderRadius.circular(10),
