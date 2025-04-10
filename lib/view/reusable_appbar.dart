@@ -1,3 +1,5 @@
+import 'package:dd_grab/view/cart.dart';
+import 'package:dd_grab/view/notification.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -84,14 +86,34 @@ class CustomHomeAppBar extends StatelessWidget {
                     // Right side: cart & notifications with badges
                     Row(
                       children: [
-                        _iconWithBadge(
-                          imagePath: 'assets/images/shopping-cart 1.png',
-                          count: 3,
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => CartPage(),
+                              ), // or NotificationsPage()
+                            ); // replace with your cart route
+                          },
+                          child: _iconWithBadge(
+                            imagePath: 'assets/images/shopping-cart 1.png',
+                            count: 3,
+                          ),
                         ),
                         const SizedBox(width: 16),
-                        _iconWithBadge(
-                          imagePath: 'assets/images/alarm-bell 1.png',
-                          count: 1,
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => NotificationPage(),
+                              ), // or NotificationsPage()
+                            ); // replace with your notification route
+                          },
+                          child: _iconWithBadge(
+                            imagePath: 'assets/images/alarm-bell 1.png',
+                            count: 1,
+                          ),
                         ),
                       ],
                     ),
