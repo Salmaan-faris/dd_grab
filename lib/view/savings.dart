@@ -66,17 +66,17 @@ class SavingsCard extends StatelessWidget {
       opacity: opacity,
       child: Container(
         margin: const EdgeInsets.only(bottom: 12),
-        padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
           color: Colors.grey[100],
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(15),
           border: Border.all(color: Colors.grey.shade300),
         ),
         child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Galaxy Image placeholder
             Container(
-              height: 60,
+              height: 80,
               width: 40,
               decoration: BoxDecoration(
                 image: const DecorationImage(
@@ -90,28 +90,63 @@ class SavingsCard extends StatelessWidget {
 
             // Info Text
             Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    item.amount,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Text(
+                          item.amount,
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: const Color(0xff2162A1),
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        SizedBox(width: 5),
+                        const Text(
+                          "(Nine Thousand)",
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                  const Text("(Nine Thousand)", style: TextStyle(fontSize: 12)),
-                  const SizedBox(height: 4),
-                  Row(
-                    children: [
-                      const Icon(Icons.calendar_today, size: 14),
-                      const SizedBox(width: 4),
-                      Text(item.date, style: const TextStyle(fontSize: 12)),
-                      const Spacer(),
-                      Text(item.code, style: const TextStyle(fontSize: 12)),
-                    ],
-                  ),
-                ],
+                    SizedBox(height: 20),
+
+                    Container(
+                      color: Colors.grey.shade300,
+                      child: Row(
+                        children: [
+                          const Icon(
+                            Icons.calendar_month_rounded,
+                            size: 25,
+                            color: Color(0xff2162A1),
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            item.date,
+                            style: const TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const Spacer(),
+                          Text(
+                            "# ${item.code}",
+                            style: const TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
 
@@ -119,14 +154,13 @@ class SavingsCard extends StatelessWidget {
 
             // Arrow Image placeholder
             Container(
-              width: 28,
-              height: 28,
+              width: 40,
+              height: 40,
               decoration: const BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage("assets/images/greybutton.png"),
-                  fit: BoxFit.cover,
-                ),
+                borderRadius: BorderRadius.only(topRight: Radius.circular(8)),
+                color: Colors.grey,
               ),
+              child: Icon(Icons.arrow_forward, color: Colors.white, size: 18),
             ),
           ],
         ),

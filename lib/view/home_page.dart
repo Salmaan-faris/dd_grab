@@ -1,4 +1,5 @@
 import 'package:dd_grab/view/carousel.dart';
+import 'package:dd_grab/view/product_list.dart';
 import 'package:dd_grab/view/reusable_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -21,27 +22,82 @@ class HomePage extends StatelessWidget {
               child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Row(
-                  children: const [
-                    _CategoryItem(
+                  children: [
+                    CategoryItem(
                       imagePath: 'assets/images/television.png',
                       label: 'Television',
+                      onTap: () {
+                        // navigate, filter, etc.
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder:
+                                (_) =>
+                                    const ProductListPage(category: 'mobiles'),
+                          ),
+                        );
+                      },
                     ),
 
-                    _CategoryItem(
+                    CategoryItem(
                       imagePath: 'assets/images/jacket.png',
                       label: 'Fashion',
+                      onTap: () {
+                        // navigate, filter, etc.
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder:
+                                (_) =>
+                                    const ProductListPage(category: 'mobiles'),
+                          ),
+                        );
+                      },
                     ),
-                    _CategoryItem(
+                    CategoryItem(
                       imagePath: 'assets/images/phone.png',
                       label: 'Mobile',
+                      onTap: () {
+                        // navigate, filter, etc.
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder:
+                                (_) =>
+                                    const ProductListPage(category: 'mobiles'),
+                          ),
+                        );
+                      },
                     ),
-                    _CategoryItem(
+                    CategoryItem(
                       imagePath: 'assets/images/sofa.png',
                       label: 'Furniture',
+                      onTap: () {
+                        // navigate, filter, etc.
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder:
+                                (_) =>
+                                    const ProductListPage(category: 'mobiles'),
+                          ),
+                        );
+                      },
                     ),
-                    _CategoryItem(
+                    CategoryItem(
                       imagePath: 'assets/images/headphones.png',
                       label: 'Headphone',
+                      onTap: () {
+                        // navigate, filter, etc.
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder:
+                                (_) =>
+                                    const ProductListPage(category: 'mobiles'),
+                          ),
+                        );
+                      },
                     ),
                   ],
                 ),
@@ -133,36 +189,46 @@ class HomePage extends StatelessWidget {
 }
 
 // CATEGORY ITEM
-class _CategoryItem extends StatelessWidget {
+class CategoryItem extends StatelessWidget {
   final String imagePath;
   final String label;
+  final VoidCallback? onTap; // 👈  optional tap callback
 
-  const _CategoryItem({required this.imagePath, required this.label});
+  const CategoryItem({
+    super.key,
+    required this.imagePath,
+    required this.label,
+    this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 80,
-      margin: const EdgeInsets.only(right: 12),
-      child: Column(
-        children: [
-          CircleAvatar(
-            radius: 26,
-            backgroundColor: Colors.white,
-            child: Image.asset(
-              imagePath,
-              width: 30,
-              height: 30,
-              fit: BoxFit.contain,
+    return GestureDetector(
+      onTap: onTap, // 👈  fires when tapped
+      behavior: HitTestBehavior.opaque,
+      child: Container(
+        width: 80,
+        margin: const EdgeInsets.only(right: 12),
+        child: Column(
+          children: [
+            CircleAvatar(
+              radius: 26,
+              backgroundColor: Colors.white,
+              child: Image.asset(
+                imagePath,
+                width: 30,
+                height: 30,
+                fit: BoxFit.contain,
+              ),
             ),
-          ),
-          const SizedBox(height: 6),
-          Text(
-            label,
-            style: GoogleFonts.poppins(fontSize: 12),
-            textAlign: TextAlign.center,
-          ),
-        ],
+            const SizedBox(height: 6),
+            Text(
+              label,
+              style: GoogleFonts.poppins(fontSize: 12),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
       ),
     );
   }

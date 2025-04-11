@@ -10,6 +10,7 @@ class EditProfilePage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final vm = ref.watch(editProfileViewModelProvider);
+    final screenwidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -42,15 +43,43 @@ class EditProfilePage extends ConsumerWidget {
                     ],
                   ),
                   _input(vm.pincodeController, "Pincode"),
-                  const SizedBox(height: 20),
-                  _sectionTitle("Change Password"),
-                  _input(vm.passwordController, "Password", obscure: true),
-                  const SizedBox(height: 24),
                   SizedBox(
-                    width: double.infinity,
+                    width: screenwidth * 0.3,
                     child: ElevatedButton(
                       onPressed: vm.saveProfile,
                       style: ElevatedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        backgroundColor: Colors.black,
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                      ),
+                      child: Text(
+                        "Save",
+                        style: GoogleFonts.poppins(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  _sectionTitle("Change Password"),
+                  _input(vm.passwordController, "Password", obscure: true),
+                  _input(
+                    vm.passwordController,
+                    "Confirm Password",
+                    obscure: true,
+                  ),
+                  const SizedBox(height: 24),
+                  SizedBox(
+                    width: screenwidth * 0.3,
+                    child: ElevatedButton(
+                      onPressed: vm.saveProfile,
+                      style: ElevatedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(6),
+                        ),
                         backgroundColor: Colors.black,
                         padding: const EdgeInsets.symmetric(vertical: 14),
                       ),
