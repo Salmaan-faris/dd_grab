@@ -1,3 +1,4 @@
+import 'package:dd_grab/view/purchase_method.dart';
 import 'package:dd_grab/viewmodels/cart_vm.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -216,7 +217,12 @@ class CartPage extends ConsumerWidget {
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    // Navigate to payment
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const PurchaseMethodPage(),
+                      ),
+                    ); // Navigate to payment
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.black,
