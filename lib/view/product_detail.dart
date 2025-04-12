@@ -1,4 +1,4 @@
-import 'package:dd_grab/models/product_detail_model.dart';
+import 'package:dd_grab/models/product_model.dart';
 import 'package:dd_grab/provider/product_detail_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -26,8 +26,8 @@ class ProductDetailsPage extends ConsumerWidget {
                   Text(
                     product.name,
                     style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                   const SizedBox(height: 12),
@@ -41,23 +41,27 @@ class ProductDetailsPage extends ConsumerWidget {
                   const SizedBox(height: 12),
                   Row(
                     children: [
-                      const Icon(Icons.star, color: Colors.orange, size: 18),
-                      Text(
-                        '${product.rating}',
-                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ...List.generate(
+                        5,
+                        (index) => const Icon(
+                          Icons.star,
+                          color: Colors.orange,
+                          size: 18,
+                        ),
                       ),
                       const SizedBox(width: 4),
                       Text(
-                        '(${product.ratingCount} ratings)',
-                        style: const TextStyle(color: Colors.grey),
+                        '${product.ratingCount} ratings',
+                        style: const TextStyle(color: Colors.black),
                       ),
                     ],
                   ),
+
                   const SizedBox(height: 6),
                   Row(
                     children: [
                       Text(
-                        product.price,
+                        '₹${product.price.toStringAsFixed(0)}',
                         style: const TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
@@ -65,7 +69,7 @@ class ProductDetailsPage extends ConsumerWidget {
                       ),
                       const SizedBox(width: 8),
                       Text(
-                        'MRP: ${product.mrp}',
+                        'MRP: ${product.mrp.toStringAsFixed(0)}',
                         style: const TextStyle(
                           decoration: TextDecoration.lineThrough,
                           color: Colors.grey,
@@ -75,30 +79,38 @@ class ProductDetailsPage extends ConsumerWidget {
                   ),
                   const SizedBox(height: 16),
 
-                  const Text(
-                    'Storage',
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 8),
-                  Wrap(
-                    spacing: 12,
-                    children:
-                        product.storageOptions.map((option) {
-                          final isSelected =
-                              viewModel.selectedStorage == option;
-                          return ChoiceChip(
-                            label: Text(option),
-                            selected: isSelected,
-                            onSelected:
-                                (_) => ref
-                                    .read(productDetailsProvider(product))
-                                    .selectStorage(option),
-                            selectedColor: Colors.black,
-                            labelStyle: TextStyle(
-                              color: isSelected ? Colors.white : Colors.black,
-                            ),
-                          );
-                        }).toList(),
+                  Row(
+                    children: [
+                      const Text(
+                        'Storage',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Wrap(
+                        spacing: 12,
+                        children:
+                            product.storageOptions.map((option) {
+                              final isSelected =
+                                  viewModel.selectedStorage == option;
+                              return ChoiceChip(
+                                label: Text(option),
+                                selected: isSelected,
+                                onSelected:
+                                    (_) => ref
+                                        .read(productDetailsProvider(product))
+                                        .selectStorage(option),
+                                selectedColor: Colors.black,
+                                labelStyle: TextStyle(
+                                  color:
+                                      isSelected ? Colors.white : Colors.black,
+                                ),
+                              );
+                            }).toList(),
+                      ),
+                    ],
                   ),
                   const SizedBox(height: 16),
 
@@ -120,32 +132,18 @@ class ProductDetailsPage extends ConsumerWidget {
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8),
                             ),
+                            prefixIcon: Icon(Icons.location_pin),
+
+                            suffixText: 'Check',
+                            suffixStyle: const TextStyle(
+                              color: Color.fromARGB(255, 28, 114, 185),
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
                       ),
-                      const SizedBox(width: 8),
-                      ElevatedButton(
-                        onPressed:
-                            () =>
-                                ref
-                                    .read(productDetailsProvider(product))
-                                    .checkDelivery(),
-                        child: const Text('Check'),
-                      ),
                     ],
                   ),
-
-                  const SizedBox(height: 24),
-                  const Text(
-                    'Product Details',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 12),
-                  const Text(
-                    'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero.',
-                    style: TextStyle(color: Colors.black54),
-                  ),
-                  const SizedBox(height: 20),
                 ],
               ),
             ),
@@ -154,24 +152,46 @@ class ProductDetailsPage extends ConsumerWidget {
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
             child: Row(
               children: [
+                // ❤️ Wishlist Icon
+                Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.grey),
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: GestureDetector(child: Icon(Icons.favorite_border)),
+                  ),
+                ),
+                const SizedBox(width: 12),
+
+                // 🛒 Buy Now
                 Expanded(
                   child: OutlinedButton.icon(
                     onPressed: () {},
                     icon: const Icon(Icons.shopping_cart_outlined),
                     label: const Text('Buy Now'),
                     style: OutlinedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
                       padding: const EdgeInsets.symmetric(vertical: 14),
                       side: const BorderSide(color: Colors.black),
                     ),
                   ),
                 ),
                 const SizedBox(width: 12),
+
+                // 🛍️ Add to Bag
                 Expanded(
                   child: ElevatedButton.icon(
                     onPressed: () {},
                     icon: const Icon(Icons.shopping_bag_outlined),
                     label: const Text('Add to Bag'),
                     style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
                       backgroundColor: Colors.black,
                       foregroundColor: Colors.white,
                       padding: const EdgeInsets.symmetric(vertical: 14),

@@ -1,10 +1,9 @@
-import 'package:dd_grab/models/product_detail_model.dart';
+
 import 'package:flutter/material.dart';
 
 class ProductDetailsViewModel extends ChangeNotifier {
-  final Product product;
 
-  ProductDetailsViewModel(this.product);
+  ProductDetailsViewModel();
 
   String selectedStorage = '';
   String enteredPincode = '';

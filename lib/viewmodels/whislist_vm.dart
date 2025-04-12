@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 class WishlistViewModel extends ChangeNotifier {
   final List<WishlistItem> _items = [
     WishlistItem(
-      image: 'assets/images/bag.png',
+      image: 'assets/images/image 3.png',
       name: 'Redmi A4 5G (Starry Black, 4GB RAM, 64GB)',
       rating: 4.5,
       ratingCount: 851,
@@ -12,7 +12,7 @@ class WishlistViewModel extends ChangeNotifier {
       mrp: '₹11,999',
     ),
     WishlistItem(
-      image: 'assets/images/phone.png',
+      image: 'assets/images/image 3.png',
       name: 'Apple iPhone 15 (128 GB) - Pink, 4GB RAM',
       rating: 4.8,
       ratingCount: 2752,

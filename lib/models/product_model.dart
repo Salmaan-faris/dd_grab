@@ -1,7 +1,6 @@
 class Product {
   final String id;
-  final String name;
-  final String imageUrl;        // thumbnail for the list
+  final String name;      // thumbnail for the list
   final double price;
   final double mrp;
   final double rating;
@@ -17,7 +16,6 @@ class Product {
   Product({
     required this.id,
     required this.name,
-    required this.imageUrl,
     required this.price,
     required this.mrp,
     required this.rating,
@@ -30,7 +28,6 @@ class Product {
   Product copyWith({bool? isWishlisted}) => Product(
         id: id,
         name: name,
-        imageUrl: imageUrl,
         price: price,
         mrp: mrp,
         rating: rating,

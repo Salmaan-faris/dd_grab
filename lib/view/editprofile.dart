@@ -98,8 +98,6 @@ class EditProfilePage extends ConsumerWidget {
           ),
         ],
       ),
-      bottomNavigationBar:
-          BottomAppBar(), // Replace with your actual bottom bar
     );
   }
 

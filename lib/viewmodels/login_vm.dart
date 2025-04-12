@@ -1,6 +1,7 @@
 import 'package:dd_grab/view/main_navigation_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -39,7 +40,6 @@ class LoginViewModel extends ChangeNotifier {
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         jsonDecode(response.body);
-        _showMessage(context, 'Login successful!');
         // Navigate to main app screen
         Navigator.pushReplacement(
           context,
@@ -58,6 +58,13 @@ class LoginViewModel extends ChangeNotifier {
   }
 
   void _showMessage(BuildContext context, String msg) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
-  }
+  Fluttertoast.showToast(
+    msg: msg,
+    toastLength: Toast.LENGTH_SHORT,
+    gravity: ToastGravity.BOTTOM,
+    backgroundColor: Colors.black87,
+    textColor: Colors.white,
+    fontSize: 16.0,
+  );
+}
 }

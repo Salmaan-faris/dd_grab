@@ -1,4 +1,5 @@
 import 'package:dd_grab/models/product_model.dart';
+import 'package:dd_grab/view/product_detail.dart';
 import 'package:dd_grab/view/reusable_appbar.dart';
 import 'package:dd_grab/viewmodels/product_vm.dart';
 import 'package:flutter/material.dart';
@@ -54,7 +55,14 @@ class _ProductTile extends ConsumerWidget {
       borderRadius: BorderRadius.circular(12),
       clipBehavior: Clip.antiAlias,
       child: InkWell(
-        onTap: () {}, // TODO: navigate to details
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ProductDetailsPage(product: product),
+            ),
+          );
+        }, // TODO: navigate to details
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -63,10 +71,10 @@ class _ProductTile extends ConsumerWidget {
               children: [
                 AspectRatio(
                   aspectRatio: 1,
-                  child: Image.network(product.image, fit: BoxFit.cover),
+                  child: Image.asset(product.image, fit: BoxFit.cover),
                 ),
                 Positioned(
-                  top: 6,
+                  bottom: 0,
                   right: 6,
                   child: InkWell(
                     onTap:

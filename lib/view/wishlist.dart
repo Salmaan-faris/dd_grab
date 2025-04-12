@@ -11,7 +11,7 @@ class WishlistPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final wishlist = ref.watch(wishlistProvider);
 
-    return Scaffold(
+    return Scaffold(backgroundColor: Colors.white,
       body: Column(
         children: [
           const CustomHomeAppBar(),

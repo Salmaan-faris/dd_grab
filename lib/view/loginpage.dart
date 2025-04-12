@@ -103,9 +103,16 @@ class LoginPage extends ConsumerWidget {
                   ),
                   child:
                       viewModel.isLoading
-                          ? const CircularProgressIndicator(color: Colors.black)
+                          ? const SizedBox(
+                            width: 24,
+                            height: 24,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: Colors.grey,
+                            ),
+                          )
                           : const Text(
-                            'Log in',
+                            'Login',
                             style: TextStyle(fontWeight: FontWeight.bold),
                           ),
                 ),
