@@ -1,4 +1,5 @@
 import 'package:dd_grab/models/product_model.dart';
+import 'package:dd_grab/view/reusable_appbar.dart';
 import 'package:dd_grab/viewmodels/product_vm.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -11,19 +12,29 @@ class ProductListPage extends ConsumerWidget {
     final products = ref.watch(productListProvider);
 
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12),
-        child: GridView.builder(
-          padding: const EdgeInsets.only(bottom: 80), // keep space for bar
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            mainAxisExtent: 290,
-            crossAxisSpacing: 12,
-            mainAxisSpacing: 12,
+      body: Column(
+        children: [
+          CustomHomeAppBar(),
+          SizedBox(height: 10),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              child: GridView.builder(
+                padding: const EdgeInsets.only(
+                  bottom: 80,
+                ), // keep space for bar
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  mainAxisExtent: 290,
+                  crossAxisSpacing: 12,
+                  mainAxisSpacing: 12,
+                ),
+                itemCount: products.length,
+                itemBuilder: (_, i) => _ProductTile(product: products[i]),
+              ),
+            ),
           ),
-          itemCount: products.length,
-          itemBuilder: (_, i) => _ProductTile(product: products[i]),
-        ),
+        ],
       ),
       bottomNavigationBar: const _SortFilterBar(),
     );

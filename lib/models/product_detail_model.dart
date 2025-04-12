@@ -7,7 +7,8 @@ class Product {
   final String mrp;
   final List<String> storageOptions;
 
-  Product(required String id, {
+  Product(
+    String id, {
     required this.name,
     required this.image,
     required this.rating,

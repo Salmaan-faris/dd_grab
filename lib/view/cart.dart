@@ -228,7 +228,10 @@ class CartPage extends ConsumerWidget {
                       borderRadius: BorderRadius.circular(6),
                     ),
                   ),
-                  child: const Text("Proceed to Payment"),
+                  child: const Text(
+                    "Proceed to Payment",
+                    style: TextStyle(color: Colors.white),
+                  ),
                 ),
               ],
             ),
