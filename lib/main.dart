@@ -20,6 +20,7 @@ class MyApp extends StatelessWidget {
           appBarTheme: const AppBarTheme(
             backgroundColor: Colors.white,
             elevation: 0,
+
             iconTheme: IconThemeData(color: Colors.black),
             titleTextStyle: TextStyle(
               color: Colors.black,
@@ -29,7 +30,7 @@ class MyApp extends StatelessWidget {
           ),
         ),
         debugShowCheckedModeBanner: false,
-        home: MainNavigationPage(), // Navigates to HomePage on start
+        home: SplashScreen(), // Navigates to HomePage on start
       ),
     );
   }
