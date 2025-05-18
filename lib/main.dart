@@ -1,7 +1,7 @@
 import 'package:dd_grab/view/main_navigation_page.dart';
-import 'package:dd_grab/view/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 void main() {
   runApp(const MyApp());
@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
     return ProviderScope(
       child: MaterialApp(
         theme: ThemeData(
-          fontFamily: 'Poppins',
+          textTheme: GoogleFonts.poppinsTextTheme(),
           scaffoldBackgroundColor: Colors.white,
           appBarTheme: const AppBarTheme(
             backgroundColor: Colors.white,
@@ -30,7 +30,7 @@ class MyApp extends StatelessWidget {
           ),
         ),
         debugShowCheckedModeBanner: false,
-        home: SplashScreen(), // Navigates to HomePage on start
+        home: MainNavigationPage(), // Navigates to HomePage on start
       ),
     );
   }

@@ -1,14 +1,18 @@
 import 'package:dd_grab/view/carousel.dart';
+import 'package:dd_grab/view/category_item.dart';
+import 'package:dd_grab/view/deals_card.dart';
 import 'package:dd_grab/view/product_list.dart';
 import 'package:dd_grab/view/reusable_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../viewmodels/home_view_model.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends ConsumerWidget {
   const HomePage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
@@ -21,85 +25,51 @@ class HomePage extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: [
-                    CategoryItem(
-                      imagePath: 'assets/images/television.png',
-                      label: 'Television',
-                      onTap: () {
-                        // navigate, filter, etc.
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder:
-                                (_) =>
-                                    const ProductListPage(category: 'mobiles'),
-                          ),
-                        );
-                      },
-                    ),
+                child: Builder(
+                  builder: (context) {
+                    final viewModel = ref.watch(homeViewModelProvider);
 
-                    CategoryItem(
-                      imagePath: 'assets/images/jacket.png',
-                      label: 'Fashion',
-                      onTap: () {
-                        // navigate, filter, etc.
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder:
-                                (_) =>
-                                    const ProductListPage(category: 'mobiles'),
-                          ),
-                        );
-                      },
-                    ),
-                    CategoryItem(
-                      imagePath: 'assets/images/phone.png',
-                      label: 'Mobile',
-                      onTap: () {
-                        // navigate, filter, etc.
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder:
-                                (_) =>
-                                    const ProductListPage(category: 'mobiles'),
-                          ),
-                        );
-                      },
-                    ),
-                    CategoryItem(
-                      imagePath: 'assets/images/sofa.png',
-                      label: 'Furniture',
-                      onTap: () {
-                        // navigate, filter, etc.
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder:
-                                (_) =>
-                                    const ProductListPage(category: 'mobiles'),
-                          ),
-                        );
-                      },
-                    ),
-                    CategoryItem(
-                      imagePath: 'assets/images/headphones.png',
-                      label: 'Headphone',
-                      onTap: () {
-                        // navigate, filter, etc.
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder:
-                                (_) =>
-                                    const ProductListPage(category: 'mobiles'),
-                          ),
-                        );
-                      },
-                    ),
-                  ],
+                    if (viewModel.isLoading) {
+                      return const Center(child: CircularProgressIndicator());
+                    } else if (viewModel.hasError) {
+                      return const Center(
+                        child: Text('Error loading categories'),
+                      );
+                    } else {
+                      return Row(
+                        children: List.generate(viewModel.categories.length, (
+                          i,
+                        ) {
+                          final cat = viewModel.categories[i];
+                          final slug = cat.slug;
+                          return SizedBox(
+                            width: 100,
+                            height: 120,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                CategoryItem(
+                                  imagePath: cat.iconPath,
+                                  label:
+                                      slug.replaceAll('-', ' ').toUpperCase(),
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder:
+                                            (_) =>
+                                                ProductListPage(category: slug),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ],
+                            ),
+                          );
+                        }),
+                      );
+                    }
+                  },
                 ),
               ),
             ),
@@ -124,19 +94,19 @@ class HomePage extends StatelessWidget {
                 scrollDirection: Axis.horizontal,
                 padding: const EdgeInsets.only(left: 16),
                 children: const [
-                  _DealsCard(
+                  DealsCard(
                     title: "Today’s Deal",
                     imageUrl: "assets/images/Rectangle 84.png",
                   ),
-                  _DealsCard(
+                  DealsCard(
                     title: "Up to 50% off",
                     imageUrl: "assets/images/image.png",
                   ),
-                  _DealsCard(
+                  DealsCard(
                     title: "Under ₹799",
                     imageUrl: "assets/images/Rectangle 84 (1).png",
                   ),
-                  _DealsCard(
+                  DealsCard(
                     title: "From ₹399",
                     imageUrl: "assets/images/Rectangle1.png",
                   ),
@@ -161,19 +131,19 @@ class HomePage extends StatelessWidget {
                 scrollDirection: Axis.horizontal,
                 padding: const EdgeInsets.only(left: 16),
                 children: const [
-                  _DealsCard(
+                  DealsCard(
                     title: "Hair Care",
                     imageUrl: "assets/images/haircare.png",
                   ),
-                  _DealsCard(
+                  DealsCard(
                     title: "iPhone 15 Plus",
                     imageUrl: "assets/images/phone2.png",
                   ),
-                  _DealsCard(
+                  DealsCard(
                     title: "Air Purifier",
                     imageUrl: "assets/images/airpurifier.png",
                   ),
-                  _DealsCard(
+                  DealsCard(
                     title: "Dining Sets",
                     imageUrl: "assets/images/table.png",
                   ),
@@ -183,89 +153,6 @@ class HomePage extends StatelessWidget {
             const SizedBox(height: 16),
           ],
         ),
-      ),
-    );
-  }
-}
-
-// CATEGORY ITEM
-class CategoryItem extends StatelessWidget {
-  final String imagePath;
-  final String label;
-  final VoidCallback? onTap; // 👈  optional tap callback
-
-  const CategoryItem({
-    super.key,
-    required this.imagePath,
-    required this.label,
-    this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap, // 👈  fires when tapped
-      behavior: HitTestBehavior.opaque,
-      child: Container(
-        width: 80,
-        margin: const EdgeInsets.only(right: 12),
-        child: Column(
-          children: [
-            CircleAvatar(
-              radius: 26,
-              backgroundColor: Colors.white,
-              child: Image.asset(
-                imagePath,
-                width: 30,
-                height: 30,
-                fit: BoxFit.contain,
-              ),
-            ),
-            const SizedBox(height: 6),
-            Text(
-              label,
-              style: GoogleFonts.poppins(fontSize: 12),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-// DEALS / RECOMMENDATION CARD
-class _DealsCard extends StatelessWidget {
-  final String title;
-  final String imageUrl;
-
-  const _DealsCard({required this.title, required this.imageUrl});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 100,
-      margin: const EdgeInsets.only(right: 12),
-      child: Column(
-        children: [
-          Container(
-            height: 80,
-            width: 80,
-            decoration: BoxDecoration(
-              color: Colors.grey.shade100,
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Image.asset(imageUrl, fit: BoxFit.contain),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            title,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-            textAlign: TextAlign.center,
-            style: GoogleFonts.poppins(fontSize: 12),
-          ),
-        ],
       ),
     );
   }

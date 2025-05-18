@@ -45,21 +45,21 @@ class BottomNavBarWidget extends ConsumerWidget {
           ),
           label: "Wishlist",
         ),
-        BottomNavigationBarItem(
-          icon: Image.asset(
-            'assets/images/save-money 1.png',
-            height: 24,
-            width: 24,
-            color: currentIndex == 3 ? Colors.black : Colors.grey[500],
-          ),
-          label: "Savings",
-        ),
+        // BottomNavigationBarItem(
+        //   icon: Image.asset(
+        //     'assets/images/save-money 1.png',
+        //     height: 24,
+        //     width: 24,
+        //     color: currentIndex == 3 ? Colors.black : Colors.grey[500],
+        //   ),
+        //   label: "Savings",
+        // ),
         BottomNavigationBarItem(
           icon: Image.asset(
             'assets/images/user 1.png',
             height: 24,
             width: 24,
-            color: currentIndex == 4 ? Colors.black : Colors.grey[500],
+            color: currentIndex == 3 ? Colors.black : Colors.grey[500],
           ),
           label: "My Profile",
         ),

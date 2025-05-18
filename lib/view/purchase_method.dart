@@ -101,7 +101,7 @@ class PurchaseMethodPage extends ConsumerWidget {
     final selected = ref.watch(selectedPaymentProvider);
 
     // Function to map payment titles to respective image assets
-    String _getIconPath(String title) {
+    String getIconPath(String title) {
       switch (title) {
         case 'UPI':
           return 'assets/images/upi-icon.png'; // Make sure this exists
@@ -124,7 +124,7 @@ class PurchaseMethodPage extends ConsumerWidget {
       child: Row(
         children: [
           Image.asset(
-            _getIconPath(title),
+            getIconPath(title),
             width: 28,
             height: 28,
             fit: BoxFit.contain,

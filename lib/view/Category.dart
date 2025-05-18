@@ -1,7 +1,9 @@
+import 'package:dd_grab/view/product_list.dart';
 import 'package:dd_grab/view/reusable_appbar.dart';
 import 'package:dd_grab/viewmodels/category_vm.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class CategoryPage extends StatelessWidget {
   const CategoryPage({super.key});
@@ -23,6 +25,11 @@ class CategoryPage extends StatelessWidget {
 class CategoryBody extends ConsumerWidget {
   const CategoryBody({super.key});
 
+  String sentenceCase(String s) {
+    if (s.isEmpty) return s;
+    return s[0].toUpperCase() + s.substring(1).toLowerCase();
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final vm = ref.watch(categoryViewModelProvider);
@@ -33,52 +40,73 @@ class CategoryBody extends ConsumerWidget {
     }
 
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         /* ───────── Left vertical main‑category menu ───────── */
         Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.only(left: 16, top: 16),
           child: Container(
             width: 100,
             decoration: BoxDecoration(
-              color: Colors.grey[100],
+              color: Colors.grey.shade100,
               borderRadius: BorderRadius.circular(8),
             ),
-            child: ListView.builder(
-              itemCount: vm.categories.length,
-              itemBuilder: (context, i) {
-                final cat = vm.categories[i];
-                final selected = vm.selectedIndex == i;
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: ListView.builder(
+                padding: EdgeInsets.zero,
+                itemCount: vm.categories.length,
+                itemBuilder: (context, i) {
+                  final cat = vm.categories[i];
+                  final selected = vm.selectedIndex == i;
 
-                return GestureDetector(
-                  onTap:
-                      () =>
-                          ref.read(categoryViewModelProvider).selectCategory(i),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: selected ? Colors.white : Colors.grey[100],
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Image.asset(cat.iconPath, width: 32, height: 32),
-                        const SizedBox(height: 6),
-                        Text(
-                          cat.name,
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w500,
+                  return GestureDetector(
+                    onTap:
+                        () => ref
+                            .read(categoryViewModelProvider)
+                            .selectCategory(i),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color:
+                            selected
+                                ? Colors.white
+                                : Colors
+                                    .grey
+                                    .shade100, // Light yellow for selected
+                        border: Border(
+                          left: BorderSide(
                             color:
-                                selected ? Colors.black : Colors.grey.shade600,
+                                selected ? Colors.yellow : Colors.transparent,
+                            width: 4,
                           ),
-                          textAlign: TextAlign.center,
                         ),
-                      ],
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 16,
+                        horizontal: 5,
+                      ),
+                      child: Column(
+                        children: [
+                          Image.asset(cat.iconPath, width: 40, height: 40),
+                          const SizedBox(height: 8),
+                          Text(
+                            cat.name,
+                            style: TextStyle(
+                              fontSize: 11,
+                              fontWeight: FontWeight.w600,
+                              color:
+                                  selected
+                                      ? Colors.black
+                                      : Colors.grey.shade700,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                );
-              },
+                  );
+                },
+              ),
             ),
           ),
         ),
@@ -86,23 +114,61 @@ class CategoryBody extends ConsumerWidget {
         /* ───────── Right list of sub‑categories ───────── */
         Expanded(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 25),
             child:
                 vm.currentSubcategories.isEmpty
                     ? const Center(child: Text('No sub‑categories'))
                     : ListView.separated(
+                      padding: EdgeInsets.zero,
                       itemCount: vm.currentSubcategories.length,
-                      separatorBuilder: (_, __) => const Divider(),
+                      separatorBuilder:
+                          (_, __) => const Column(
+                            children: [
+                              SizedBox(height: 16),
+                              Divider(thickness: 1),
+                              SizedBox(height: 16),
+                            ],
+                          ),
                       itemBuilder: (_, idx) {
                         final slug = vm.currentSubcategories[idx];
-                        final pretty =
-                            slug.replaceAll('-', ' ').toUpperCase(); // format
-                        return Text(
-                          pretty,
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                          ),
+                        final parts = slug.split('-');
+                        final section =
+                            parts.isNotEmpty ? sentenceCase(parts[0]) : '';
+                        final pretty = slug.replaceAll('-', ' ');
+                        // Determine if header needed
+                        if (idx == 0) {
+                        } else {
+                          final prevSlug = vm.currentSubcategories[idx - 1];
+                          final prevSection =
+                              prevSlug.split('-').isNotEmpty
+                                  ? sentenceCase(prevSlug.split('-')[0])
+                                  : '';
+                          if (section != prevSection) {}
+                        }
+
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder:
+                                        (context) =>
+                                            ProductListPage(category: ''),
+                                  ),
+                                );
+                              },
+                              child: Text(
+                                sentenceCase(pretty),
+                                style: GoogleFonts.poppins(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w300,
+                                ),
+                              ),
+                            ),
+                          ],
                         );
                       },
                     ),
