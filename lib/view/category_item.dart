@@ -22,10 +22,11 @@ class CategoryItem extends StatelessWidget {
         width: 80,
         margin: const EdgeInsets.only(right: 12),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             CircleAvatar(
               radius: 26,
-              backgroundColor: Colors.white,
+              backgroundColor: Colors.grey.shade200,
               child: Image.asset(
                 imagePath,
                 width: 30,
@@ -33,10 +34,10 @@ class CategoryItem extends StatelessWidget {
                 fit: BoxFit.contain,
               ),
             ),
-            const SizedBox(height: 6),
+            SizedBox(height: 10),
             Text(
               label,
-              style: GoogleFonts.poppins(fontSize: 12),
+              style: GoogleFonts.poppins(fontSize: 10),
               textAlign: TextAlign.center,
             ),
           ],

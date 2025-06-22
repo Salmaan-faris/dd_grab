@@ -1,6 +1,8 @@
+import 'package:dd_grab/view/address.dart';
 import 'package:dd_grab/view/editprofile.dart';
 import 'package:dd_grab/view/reusable_appbar.dart';
 import 'package:dd_grab/viewmodels/profile_vm.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -9,6 +11,9 @@ class ProfilePage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    Future.microtask(() {
+      ref.read(profileViewModelProvider.notifier).fetchProfileData();
+    });
     final profileVM = ref.watch(profileViewModelProvider);
 
     return Scaffold(
@@ -39,12 +44,20 @@ class ProfilePage extends ConsumerWidget {
                     ),
                     child: Row(
                       children: [
-                        const CircleAvatar(
+                        CircleAvatar(
                           radius: 24,
                           backgroundColor: Colors.black,
                           child: Text(
-                            "DB",
-                            style: TextStyle(color: Colors.white),
+                            profileVM.name.isNotEmpty
+                                ? profileVM.name
+                                    .trim()
+                                    .split(' ')
+                                    .map((e) => e.isNotEmpty ? e[0] : '')
+                                    .take(2)
+                                    .join()
+                                    .toUpperCase()
+                                : '',
+                            style: const TextStyle(color: Colors.white),
                           ),
                         ),
                         const SizedBox(width: 12),
@@ -74,7 +87,14 @@ class ProfilePage extends ConsumerWidget {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (_) => const EditProfilePage(),
+                                builder:
+                                    (_) => EditProfilePage(
+                                      name: profileVM.name,
+                                      lastName: profileVM.lastname,
+                                      username: profileVM.username,
+                                      email: profileVM.email,
+                                      phone: profileVM.phone,
+                                    ),
                               ),
                             );
                           },
@@ -89,62 +109,69 @@ class ProfilePage extends ConsumerWidget {
 
                   const SizedBox(height: 16),
 
-                  Row(
-                    children: [
-                      Image.asset('assets/images/rewards.png', height: 80),
-                      Expanded(
-                        child: Container(
-                          padding: const EdgeInsets.all(12),
-                          decoration: BoxDecoration(
-                            color: Colors.blue[800],
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const SizedBox(width: 10),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: const [
-                                    _RewardRow(
-                                      label: "RewardStatus",
-                                      value: "Unpaid",
-                                    ),
-                                    _RewardRow(
-                                      label: "Wallet Balance",
-                                      value: "23,000 INR",
-                                    ),
-                                    _RewardRow(
-                                      label: "Unused Balance",
-                                      value: "22,000 INR",
-                                    ),
-                                    _RewardRow(
-                                      label: "Total",
-                                      value: "66,000 INR",
-                                    ),
-                                    _RewardRow(
-                                      label: "Used Amount",
-                                      value: "12,000 INR",
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-
+                  // Row(
+                  //   children: [
+                  //     Image.asset('assets/images/rewards.png', height: 80),
+                  //     Expanded(
+                  //       child: Container(
+                  //         padding: const EdgeInsets.all(12),
+                  //         decoration: BoxDecoration(
+                  //           color: Colors.blue[800],
+                  //           borderRadius: BorderRadius.circular(12),
+                  //         ),
+                  //         child: Row(
+                  //           crossAxisAlignment: CrossAxisAlignment.start,
+                  //           children: [
+                  //             const SizedBox(width: 10),
+                  //             Expanded(
+                  //               child: Column(
+                  //                 crossAxisAlignment: CrossAxisAlignment.start,
+                  //                 children: const [
+                  //                   _RewardRow(
+                  //                     label: "RewardStatus",
+                  //                     value: "Unpaid",
+                  //                   ),
+                  //                   _RewardRow(
+                  //                     label: "Wallet Balance",
+                  //                     value: "23,000 INR",
+                  //                   ),
+                  //                   _RewardRow(
+                  //                     label: "Unused Balance",
+                  //                     value: "22,000 INR",
+                  //                   ),
+                  //                   _RewardRow(
+                  //                     label: "Total",
+                  //                     value: "66,000 INR",
+                  //                   ),
+                  //                   _RewardRow(
+                  //                     label: "Used Amount",
+                  //                     value: "12,000 INR",
+                  //                   ),
+                  //                 ],
+                  //               ),
+                  //             ),
+                  //           ],
+                  //         ),
+                  //       ),
+                  //     ),
+                  //   ],
+                  // ),
                   const SizedBox(height: 16),
-                  _profileOption(title: "Orders"),
+                  _profileOption(title: "Orders", onTap: () {}),
                   Divider(color: Colors.grey.shade300),
-                  _profileOption(title: "Address"),
+                  _profileOption(
+                    title: "Address",
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        CupertinoPageRoute(builder: (context) => AddressPage()),
+                      );
+                    },
+                  ),
                   Divider(color: Colors.grey.shade300),
-                  _profileOption(title: "Help"),
+                  _profileOption(title: "Help", onTap: () {}),
                   Divider(color: Colors.grey.shade300),
-                  _profileOption(title: "Returns & Refunds"),
+                  _profileOption(title: "Returns & Refunds", onTap: () {}),
                   Divider(color: Colors.grey.shade300),
                   const SizedBox(height: 20),
 
@@ -179,41 +206,41 @@ class ProfilePage extends ConsumerWidget {
     );
   }
 
-  Widget _profileOption({required String title}) {
+  Widget _profileOption({required String title, required VoidCallback onTap}) {
     return ListTile(
       title: Text(title),
       trailing: const Icon(Icons.arrow_forward, size: 16),
-      onTap: () {},
+      onTap: onTap,
     );
   }
-}
 
-class _RewardRow extends StatelessWidget {
-  final String label;
-  final String value;
-  const _RewardRow({required this.label, required this.value});
+  // class _RewardRow extends StatelessWidget {
+  //   final String label;
+  //   final String value;
+  //   const _RewardRow({required this.label, required this.value});
 
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 2),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            label,
-            style: const TextStyle(color: Colors.white, fontSize: 12),
-          ),
-          Text(
-            value,
-            style: const TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-              fontSize: 12,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+  //   @override
+  //   Widget build(BuildContext context) {
+  //     return Padding(
+  //       padding: const EdgeInsets.only(bottom: 2),
+  //       child: Row(
+  //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //         children: [
+  //           Text(
+  //             label,
+  //             style: const TextStyle(color: Colors.white, fontSize: 12),
+  //           ),
+  //           Text(
+  //             value,
+  //             style: const TextStyle(
+  //               color: Colors.white,
+  //               fontWeight: FontWeight.bold,
+  //               fontSize: 12,
+  //             ),
+  //           ),
+  //         ],
+  //       ),
+  //     );
+  //   }
+  // }
 }

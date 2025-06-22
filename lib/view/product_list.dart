@@ -1,41 +1,59 @@
 import 'package:dd_grab/models/product_model.dart';
 import 'package:dd_grab/view/product_detail.dart';
-import 'package:dd_grab/view/reusable_appbar.dart';
 import 'package:dd_grab/viewmodels/product_vm.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class ProductListPage extends ConsumerWidget {
-  const ProductListPage({super.key, required String category});
+class ProductListPage extends ConsumerStatefulWidget {
+  const ProductListPage({super.key, required this.categoryId});
+  final String categoryId;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ProductListPage> createState() => _ProductListPageState();
+}
+
+class _ProductListPageState extends ConsumerState<ProductListPage> {
+  bool _isLoaded = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_isLoaded) {
+      ref
+          .read(productListProvider.notifier)
+          .fetchProductsByCategory(widget.categoryId);
+      _isLoaded = true;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final products = ref.watch(productListProvider);
 
     return Scaffold(
-      body: Column(
-        children: [
-          CustomHomeAppBar(),
-          SizedBox(height: 10),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12),
-              child: GridView.builder(
-                padding: const EdgeInsets.only(
-                  bottom: 80,
-                ), // keep space for bar
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  mainAxisExtent: 290,
-                  crossAxisSpacing: 12,
-                  mainAxisSpacing: 12,
+      body: SafeArea(
+        child: Column(
+          children: [
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                child: GridView.builder(
+                  padding: const EdgeInsets.only(
+                    bottom: 80,
+                  ), // keep space for bar
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    mainAxisExtent: 260,
+                    crossAxisSpacing: 12,
+                    mainAxisSpacing: 12,
+                  ),
+                  itemCount: products.length,
+                  itemBuilder: (_, i) => _ProductTile(product: products[i]),
                 ),
-                itemCount: products.length,
-                itemBuilder: (_, i) => _ProductTile(product: products[i]),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
       bottomNavigationBar: const _SortFilterBar(),
     );
@@ -56,51 +74,29 @@ class _ProductTile extends ConsumerWidget {
       clipBehavior: Clip.antiAlias,
       child: InkWell(
         onTap: () {
+          print('Tapped Product ID: ${product.id}');
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => ProductDetailsPage(product: product),
+              builder: (context) => ProductDetailsPage(productId: product.id),
             ),
           );
-        }, // TODO: navigate to details
+        },
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // ── image + heart ────────────────────────────────────────────
-            Stack(
-              children: [
-                AspectRatio(
-                  aspectRatio: 1,
-                  child: Image.asset(product.image, fit: BoxFit.cover),
-                ),
-                Positioned(
-                  bottom: 0,
-                  right: 6,
-                  child: InkWell(
-                    onTap:
-                        () => ref
-                            .read(productListProvider.notifier)
-                            .toggleWishlist(product.id),
-                    child: CircleAvatar(
-                      radius: 16,
-                      backgroundColor: Colors.white.withOpacity(.8),
-                      child: Icon(
-                        product.isWishlisted
-                            ? Icons.favorite
-                            : Icons.favorite_border,
-                        color:
-                            product.isWishlisted
-                                ? Colors.red
-                                : Colors.grey.shade600,
-                        size: 18,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
+            ClipRRect(
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(12),
+                topRight: Radius.circular(12),
+              ),
+              child: SizedBox(
+                height: 120,
+                width: double.infinity,
+                child: Image.network(product.image, fit: BoxFit.cover),
+              ),
             ),
             const SizedBox(height: 6),
-            // ── name ────────────────────────────────────────────────────
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 6),
               child: Text(
@@ -113,7 +109,6 @@ class _ProductTile extends ConsumerWidget {
               ),
             ),
             const SizedBox(height: 4),
-            // ── rating row ──────────────────────────────────────────────
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 6),
               child: Row(
@@ -136,8 +131,6 @@ class _ProductTile extends ConsumerWidget {
                 ],
               ),
             ),
-            const Spacer(),
-            // ── price row ───────────────────────────────────────────────
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 8),
               child: Row(

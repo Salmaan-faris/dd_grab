@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
 
 final loginViewModelProvider = ChangeNotifierProvider(
   (ref) => LoginViewModel(),
@@ -39,7 +40,11 @@ class LoginViewModel extends ChangeNotifier {
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        jsonDecode(response.body);
+        final responseData = jsonDecode(response.body);
+        final token = responseData['data']['token'];
+        print('Logged in token: $token');
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString('USER_TOKEN', token);
         // Navigate to main app screen
         Navigator.pushReplacement(
           context,
@@ -58,13 +63,13 @@ class LoginViewModel extends ChangeNotifier {
   }
 
   void _showMessage(BuildContext context, String msg) {
-  Fluttertoast.showToast(
-    msg: msg,
-    toastLength: Toast.LENGTH_SHORT,
-    gravity: ToastGravity.BOTTOM,
-    backgroundColor: Colors.black87,
-    textColor: Colors.white,
-    fontSize: 16.0,
-  );
-}
+    Fluttertoast.showToast(
+      msg: msg,
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.BOTTOM,
+      backgroundColor: Colors.black87,
+      textColor: Colors.white,
+      fontSize: 16.0,
+    );
+  }
 }

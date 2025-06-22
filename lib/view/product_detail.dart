@@ -1,208 +1,148 @@
-import 'package:dd_grab/models/product_model.dart';
-import 'package:dd_grab/provider/product_detail_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'reusable_appbar.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
-class ProductDetailsPage extends ConsumerWidget {
-  final Product product;
+class ProductDetailsPage extends ConsumerStatefulWidget {
+  final String productId;
 
-  const ProductDetailsPage({super.key, required this.product});
+  const ProductDetailsPage({super.key, required this.productId});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final viewModel = ref.watch(productDetailsProvider(product));
+  ConsumerState<ProductDetailsPage> createState() => _ProductDetailsPageState();
+}
 
+class _ProductDetailsPageState extends ConsumerState<ProductDetailsPage> {
+  final PageController _pageController = PageController(viewportFraction: 1);
+
+  Future<Map<String, dynamic>> fetchProductDetails(String productId) async {
+    final response = await http.get(
+      Uri.parse('https://dd-api.codesprint.cloud/api/v1/product/$productId'),
+    );
+    if (response.statusCode == 200) {
+      final jsonMap = jsonDecode(response.body);
+      return jsonMap['data'];
+    } else {
+      throw Exception('Failed to load product');
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: [
-          const CustomHomeAppBar(),
-          Expanded(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    product.name,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  Center(
-                    child: Image.asset(
-                      product.image,
-                      height: 200,
-                      fit: BoxFit.contain,
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  Row(
-                    children: [
-                      ...List.generate(
-                        5,
-                        (index) => const Icon(
-                          Icons.star,
-                          color: Colors.orange,
-                          size: 18,
-                        ),
-                      ),
-                      const SizedBox(width: 4),
-                      Text(
-                        '${product.ratingCount} ratings',
-                        style: const TextStyle(color: Colors.black),
-                      ),
-                    ],
-                  ),
+      body: FutureBuilder<Map<String, dynamic>>(
+        future: fetchProductDetails(widget.productId),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          }
 
-                  const SizedBox(height: 6),
-                  Row(
-                    children: [
-                      Text(
-                        '₹${product.price.toStringAsFixed(0)}',
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      Text(
-                        'MRP: ${product.mrp.toStringAsFixed(0)}',
-                        style: const TextStyle(
-                          decoration: TextDecoration.lineThrough,
-                          color: Colors.grey,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
+          final product = snapshot.data!['product'];
+          final relatedProducts = snapshot.data!['relatedProducts'];
 
-                  Row(
-                    children: [
-                      const Text(
-                        'Storage',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
+          return SafeArea(
+            child: Column(
+              children: [
+                Expanded(
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          product['slug'],
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
-                      const SizedBox(width: 8),
-                      Wrap(
-                        spacing: 12,
-                        children:
-                            product.storageOptions.map((option) {
-                              final isSelected =
-                                  viewModel.selectedStorage == option;
-                              return ChoiceChip(
-                                label: Text(option),
-                                selected: isSelected,
-                                onSelected:
-                                    (_) => ref
-                                        .read(productDetailsProvider(product))
-                                        .selectStorage(option),
-                                selectedColor: Colors.black,
-                                labelStyle: TextStyle(
-                                  color:
-                                      isSelected ? Colors.white : Colors.black,
+                        const SizedBox(height: 12),
+                        SizedBox(
+                          height: 250,
+                          child: PageView.builder(
+                            itemCount: product['images'].length,
+                            controller: _pageController,
+                            itemBuilder: (context, index) {
+                              return Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 4.0,
+                                ),
+                                child: Image.network(
+                                  'https://ecom-stag.codesprint.cloud/storage/${product['images'][index]}',
+                                  fit: BoxFit.cover,
                                 ),
                               );
-                            }).toList(),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-
-                  const Text(
-                    'Delivery and Return Details',
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 8),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: TextField(
-                          onChanged:
-                              (val) => ref
-                                  .read(productDetailsProvider(product))
-                                  .setPincode(val),
-                          decoration: InputDecoration(
-                            hintText: 'Pincode',
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            prefixIcon: Icon(Icons.location_pin),
-
-                            suffixText: 'Check',
-                            suffixStyle: const TextStyle(
-                              color: Color.fromARGB(255, 28, 114, 185),
-                              fontWeight: FontWeight.bold,
+                            },
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Center(
+                          child: SmoothPageIndicator(
+                            controller: _pageController,
+                            count: product['images'].length,
+                            effect: WormEffect(
+                              dotHeight: 8,
+                              dotWidth: 8,
+                              activeDotColor: Colors.black,
                             ),
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-            child: Row(
-              children: [
-                // ❤️ Wishlist Icon
-                Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey),
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: GestureDetector(child: Icon(Icons.favorite_border)),
-                  ),
-                ),
-                const SizedBox(width: 12),
-
-                // 🛒 Buy Now
-                Expanded(
-                  child: OutlinedButton.icon(
-                    onPressed: () {},
-                    icon: const Icon(Icons.shopping_cart_outlined),
-                    label: const Text('Buy Now'),
-                    style: OutlinedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                      side: const BorderSide(color: Colors.black),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 12),
-
-                // 🛍️ Add to Bag
-                Expanded(
-                  child: ElevatedButton.icon(
-                    onPressed: () {},
-                    icon: const Icon(Icons.shopping_bag_outlined),
-                    label: const Text('Add to Bag'),
-                    style: ElevatedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      backgroundColor: Colors.black,
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(vertical: 14),
+                        const SizedBox(height: 12),
+                        Text(
+                          'Viewed: ${product['viewed']} times',
+                          style: const TextStyle(color: Colors.black),
+                        ),
+                        const SizedBox(height: 6),
+                        Text(
+                          '₹${product['selling_price'] ?? 'N/A'}',
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        const Text(
+                          'Related Products',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        SizedBox(
+                          height: 100,
+                          child: ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            itemCount: relatedProducts.length,
+                            itemBuilder: (context, index) {
+                              final rp = relatedProducts[index];
+                              return Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Image.network(
+                                  'https://ecom-stag.codesprint.cloud/storage/${rp['images'][0]}',
+                                  width: 80,
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
               ],
             ),
-          ),
-        ],
+          );
+        },
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
   }
 }

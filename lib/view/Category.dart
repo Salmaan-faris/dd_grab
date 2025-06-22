@@ -151,12 +151,20 @@ class CategoryBody extends ConsumerWidget {
                           children: [
                             GestureDetector(
                               onTap: () {
+                                final selectedMainCat =
+                                    vm.categories[vm.selectedIndex];
+                                final selectedSubCat =
+                                    selectedMainCat
+                                        .subcategories[idx]; // 👈 get subcat
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
                                     builder:
-                                        (context) =>
-                                            ProductListPage(category: ''),
+                                        (_) => ProductListPage(
+                                          categoryId:
+                                              selectedSubCat['id']
+                                                  .toString(), // ✅ Pass subcategory ID
+                                        ),
                                   ),
                                 );
                               },

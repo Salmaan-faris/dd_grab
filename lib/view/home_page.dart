@@ -43,7 +43,7 @@ class HomePage extends ConsumerWidget {
                           final cat = viewModel.categories[i];
                           final slug = cat.slug;
                           return SizedBox(
-                            width: 100,
+                            width: 80,
                             height: 120,
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -57,8 +57,9 @@ class HomePage extends ConsumerWidget {
                                       context,
                                       MaterialPageRoute(
                                         builder:
-                                            (_) =>
-                                                ProductListPage(category: slug),
+                                            (_) => ProductListPage(
+                                              categoryId: slug,
+                                            ),
                                       ),
                                     );
                                   },
