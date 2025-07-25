@@ -24,14 +24,30 @@ final addressFormProvider = StateProvider<Map<String, String>>(
 class AddressViewModel extends StateNotifier<AddressState> {
   AddressViewModel() : super(AddressState.initial());
 
-  Future<void> fetchAddresses() async {
+  Future<void> fetchAddresses({bool forceRefresh = false}) async {
+    if (state.addresses.isNotEmpty && !forceRefresh) return;
+
     state = state.copyWith(isLoading: true, error: '');
     try {
       final prefs = await SharedPreferences.getInstance();
       final token = prefs.getString('USER_TOKEN') ?? '';
 
+      final uri = Uri.parse(
+        "https://dd-api.codesprint.cloud/api/v1/user/get-addresses",
+      );
+      print('Fetching addresses from: $uri');
+      print('Using token: $token');
+
+      if (token.isEmpty) {
+        state = state.copyWith(
+          isLoading: false,
+          error: 'Auth token is missing',
+        );
+        return;
+      }
+
       final response = await http.get(
-        Uri.parse("https://dd-api.codesprint.cloud/api/v1/user/get-addresses"),
+        uri,
         headers: {
           'Authorization': 'Bearer $token',
           'Content-Type': 'application/json',

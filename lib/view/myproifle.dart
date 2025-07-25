@@ -66,7 +66,7 @@ class ProfilePage extends ConsumerWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                profileVM.name,
+                                '${profileVM.name} ${profileVM.lastname}',
                                 style: const TextStyle(
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -83,8 +83,8 @@ class ProfilePage extends ConsumerWidget {
                           ),
                         ),
                         InkWell(
-                          onTap: () {
-                            Navigator.push(
+                          onTap: () async {
+                            await Navigator.push(
                               context,
                               MaterialPageRoute(
                                 builder:
@@ -97,6 +97,10 @@ class ProfilePage extends ConsumerWidget {
                                     ),
                               ),
                             );
+                            // Refresh profile after returning
+                            ref
+                                .read(profileViewModelProvider.notifier)
+                                .refreshProfileData();
                           },
                           child: const Text(
                             "Edit",

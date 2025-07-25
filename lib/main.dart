@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
 void main() {
   runApp(const MyApp());
 }
@@ -15,6 +17,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return ProviderScope(
       child: MaterialApp(
+        navigatorKey: navigatorKey,
         theme: ThemeData(
           textTheme: GoogleFonts.poppinsTextTheme(),
           scaffoldBackgroundColor: Colors.white,
@@ -31,7 +34,7 @@ class MyApp extends StatelessWidget {
           ),
         ),
         debugShowCheckedModeBanner: false,
-        home: SplashScreen(), // Navigates to HomePage on start
+        home: MainNavigationPage(), // Navigates to HomePage on start
       ),
     );
   }

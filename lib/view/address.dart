@@ -22,7 +22,9 @@ class AddressPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(addressViewModelProvider);
-    ref.read(addressViewModelProvider.notifier);
+    Future.microtask(
+      () => ref.read(addressViewModelProvider.notifier).fetchAddresses(),
+    );
 
     return Scaffold(
       appBar: AppBar(
@@ -113,23 +115,48 @@ class AddressPage extends ConsumerWidget {
                       separatorBuilder: (_, __) => const Divider(),
                       itemBuilder: (context, index) {
                         final addr = state.addresses[index];
-                        return ListTile(
-                          leading: Icon(
-                            addr['isDefault'] ? Icons.home : Icons.location_on,
-                            color:
-                                addr['isDefault'] ? Colors.green : Colors.grey,
+                        return Container(
+                          margin: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 8,
                           ),
-                          title: Text(
-                            '${addr['first_name']} ${addr['last_name']}',
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(12),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black12,
+                                blurRadius: 4,
+                                offset: Offset(0, 2),
+                              ),
+                            ],
                           ),
-                          subtitle: Text(
-                            '${addr['address_1']}, ${addr['address_2']},\n${addr['city']}, ${addr['state']} ${addr['zip']}, ${addr['country']}',
-                          ),
-                          trailing: TextButton(
-                            onPressed: () {
-                              // Navigate to Edit Address with prefilled data
-                            },
-                            child: const Text('Edit'),
+                          child: ListTile(
+                            leading: Icon(
+                              addr['isDefault']
+                                  ? Icons.home
+                                  : Icons.location_on,
+                              color:
+                                  addr['isDefault']
+                                      ? Colors.green
+                                      : Colors.grey,
+                            ),
+                            title: Text(
+                              '${addr['first_name']} ${addr['last_name']}',
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            subtitle: Text(
+                              '${addr['address_1']}, ${addr['address_2']},\n${addr['city']}, ${addr['state']} ${addr['zip']}, ${addr['country']}',
+                            ),
+                            trailing: TextButton(
+                              onPressed: () {
+                                // Navigate to Edit Address with prefilled data
+                              },
+                              child: const Text('Edit'),
+                            ),
                           ),
                         );
                       },

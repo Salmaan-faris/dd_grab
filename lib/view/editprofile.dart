@@ -24,13 +24,24 @@ class EditProfilePage extends ConsumerWidget {
     final vm = ref.watch(editProfileViewModelProvider);
     final screenwidth = MediaQuery.of(context).size.width;
 
-    // Initialize controllers with passed data
-    vm.nameController.text = name;
-    vm.lastname.text = lastName;
-    vm.username.text = username;
-    vm.emailController.text = email;
-    vm.phoneController.text = phone;
+    if (!vm.initialized) {
+      vm.nameController.text = name;
+      vm.lastname.text = lastName;
+      vm.username.text = username;
+      vm.emailController.text = email;
+      vm.phoneController.text = phone;
+      vm.initialized = true;
+    }
     return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          "Edit Profile",
+          style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+        ),
+        centerTitle: true,
+        backgroundColor: Colors.white,
+        iconTheme: const IconThemeData(color: Colors.black),
+      ),
       backgroundColor: Colors.white,
       body: SafeArea(
         child: Column(
@@ -41,13 +52,6 @@ class EditProfilePage extends ConsumerWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      "Edit My Profile",
-                      style: GoogleFonts.poppins(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
                     const SizedBox(height: 20),
                     _sectionTitle("Personal Details"),
                     _input(vm.nameController, "Name"),
@@ -66,9 +70,22 @@ class EditProfilePage extends ConsumerWidget {
                     SizedBox(
                       width: screenwidth * 0.3,
                       child: ElevatedButton(
-                        onPressed: () async {
-                          await vm.editProfile();
-                        },
+                        onPressed:
+                            vm.loading
+                                ? null
+                                : () async {
+                                  final success = await vm.editProfile();
+                                  if (success && context.mounted) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text(
+                                          'Profile updated successfully!',
+                                        ),
+                                        behavior: SnackBarBehavior.floating,
+                                      ),
+                                    );
+                                  }
+                                },
                         style: ElevatedButton.styleFrom(
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(6),
@@ -76,13 +93,23 @@ class EditProfilePage extends ConsumerWidget {
                           backgroundColor: Colors.black,
                           padding: const EdgeInsets.symmetric(vertical: 14),
                         ),
-                        child: Text(
-                          "Save",
-                          style: GoogleFonts.poppins(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
+                        child:
+                            vm.loading
+                                ? const SizedBox(
+                                  height: 20,
+                                  width: 20,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    color: Colors.white,
+                                  ),
+                                )
+                                : Text(
+                                  "Save",
+                                  style: GoogleFonts.poppins(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
                       ),
                     ),
                     // const SizedBox(height: 20),

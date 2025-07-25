@@ -61,7 +61,8 @@ class ProfileViewModel extends ChangeNotifier {
         final responseData = json.decode(response.body);
         final userData = responseData['data'];
 
-        name = userData['first_name'] + ' ' + userData['last_name'];
+        name = userData['first_name'];
+        lastname = userData['last_name'];
         email = userData['email'];
         phone = userData['phone'];
         lastname = userData['last_name'];
@@ -74,5 +75,10 @@ class ProfileViewModel extends ChangeNotifier {
     } catch (e) {
       debugPrint('Error fetching profile data: $e');
     }
+  }
+
+  Future<void> refreshProfileData() async {
+    _hasFetchedProfileData = false;
+    await fetchProfileData();
   }
 }
